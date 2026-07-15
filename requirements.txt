@@ -1,0 +1,2 @@
+# Phase 1 (source registry): Python standard library only - no dependencies.
+# Phase 2/3 dependencies will be added when those phases land.

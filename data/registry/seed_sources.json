@@ -1,0 +1,332 @@
+{
+  "registry_version": "1.0",
+  "phase": 1,
+  "vetting_date": "2026-07-15",
+  "status_definitions": {
+    "approved": "License verified as public domain or an open license (e.g. CC BY-SA). Safe to collect and redistribute with attribution where required.",
+    "conditional": "Officially free to download from the rights holder, but NOT openly licensed. Personal, non-commercial educational use only; no redistribution of content. Collection requires explicit project-owner sign-off.",
+    "rejected": "Terms prohibit collection, provenance is unverifiable, or the material is under copyright without permission."
+  },
+  "sources": [
+    {
+      "id": "sat-1926-original",
+      "usage_tag": "PUBLIC_DOMAIN",
+      "collection": { "method": "direct" },
+      "name": "Scholastic Aptitude Test (1926) - the original first SAT",
+      "publisher": "College Entrance Examination Board",
+      "source_type": "public_domain_scan",
+      "landing_url": "https://commons.wikimedia.org/wiki/File:Scholastic_Aptitude_Test_(SAT)_from_1926.pdf",
+      "file_urls": [
+        "https://upload.wikimedia.org/wikipedia/commons/a/a5/Scholastic_Aptitude_Test_%28SAT%29_from_1926.pdf"
+      ],
+      "publication_year": 1926,
+      "license": "Public domain (US): published before January 1, 1931",
+      "evidence": [
+        {
+          "url": "https://commons.wikimedia.org/wiki/File:Scholastic_Aptitude_Test_(SAT)_from_1926.pdf",
+          "note": "Wikimedia Commons file page carries a US public-domain tag stating the work was published (or registered with the US Copyright Office) before January 1, 1931.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "approved",
+      "priority": "high",
+      "decision_reason": "US public domain (pre-1931 publication). No usage restrictions.",
+      "notes": "Historic first SAT (administered June 23, 1926). Nine subtests including analogies, antonyms, number series, paragraph reading."
+    },
+    {
+      "id": "ceeb-math-1911-1915",
+      "usage_tag": "PUBLIC_DOMAIN",
+      "collection": { "method": "archive_org", "item_id": "questmathematics00collrich" },
+      "name": "Examination Questions in Mathematics, Third Series (1911-1915)",
+      "publisher": "College Entrance Examination Board / Ginn and Company",
+      "source_type": "public_domain_scan",
+      "landing_url": "https://archive.org/details/questmathematics00collrich",
+      "file_urls": [],
+      "file_resolution": "Resolve concrete PDF filename via https://archive.org/metadata/questmathematics00collrich in Phase 2",
+      "publication_year": 1915,
+      "license": "Public domain (US): published before 1931; Internet Archive rights statement NOT_IN_COPYRIGHT",
+      "evidence": [
+        {
+          "url": "https://archive.org/details/questmathematics00collrich",
+          "note": "Internet Archive item page; CEEB mathematics examination questions, published by Ginn and Company. Free download offered (no lending restriction), consistent with not-in-copyright status.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "approved",
+      "priority": "high",
+      "decision_reason": "US public domain (pre-1931 publication); Internet Archive offers unrestricted download.",
+      "notes": "Closest historical analogue to SAT math sections. Good volume of math questions for pipeline testing."
+    },
+    {
+      "id": "ceeb-math-1916-1920",
+      "usage_tag": "PUBLIC_DOMAIN",
+      "collection": { "method": "archive_org", "item_id": "mathematicsquest00collrich" },
+      "name": "Examination Questions in Mathematics, Fourth Series (1916-1920)",
+      "publisher": "College Entrance Examination Board / Ginn and Company",
+      "source_type": "public_domain_scan",
+      "landing_url": "https://archive.org/details/mathematicsquest00collrich",
+      "file_urls": [],
+      "file_resolution": "Resolve concrete PDF filename via https://archive.org/metadata/mathematicsquest00collrich in Phase 2",
+      "publication_year": 1920,
+      "license": "Public domain (US): published before 1931",
+      "evidence": [
+        {
+          "url": "https://archive.org/details/mathematicsquest00collrich",
+          "note": "Internet Archive item page; CEEB mathematics examination questions 1916-1920, free download offered.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "approved",
+      "priority": "high",
+      "decision_reason": "US public domain (pre-1931 publication); unrestricted download.",
+      "notes": "Companion volume to the third series."
+    },
+    {
+      "id": "ceeb-history-c1915",
+      "usage_tag": "PUBLIC_DOMAIN",
+      "collection": { "method": "archive_org", "item_id": "questexamination00collrich" },
+      "name": "Examination Questions in History (c. 1915)",
+      "publisher": "College Entrance Examination Board / Ginn and Company",
+      "source_type": "public_domain_scan",
+      "landing_url": "https://archive.org/details/questexamination00collrich",
+      "file_urls": [],
+      "file_resolution": "Resolve concrete PDF filename via https://archive.org/metadata/questexamination00collrich in Phase 2",
+      "publication_year": 1915,
+      "license": "Public domain (US): Internet Archive rights statement NOT_IN_COPYRIGHT",
+      "evidence": [
+        {
+          "url": "https://archive.org/details/questexamination00collrich",
+          "note": "Internet Archive metadata explicitly shows NOT_IN_COPYRIGHT; full free PDF download offered (B/W PDF 1.5M, standard PDF 2.0M, full text, EPUB). 47 pages, scanned from University of California Libraries.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "approved",
+      "priority": "medium",
+      "decision_reason": "Explicit NOT_IN_COPYRIGHT rights statement plus pre-1931 publication.",
+      "notes": "Verbal/essay-style questions; useful for testing text-heavy page routing."
+    },
+    {
+      "id": "ceeb-history-1901-1905",
+      "usage_tag": "PUBLIC_DOMAIN",
+      "collection": { "method": "archive_org", "item_id": "examinationques01boargoog" },
+      "name": "Examination Questions in History, 1901-1905",
+      "publisher": "College Entrance Examination Board",
+      "source_type": "public_domain_scan",
+      "landing_url": "https://archive.org/details/examinationques01boargoog",
+      "file_urls": [],
+      "file_resolution": "Resolve concrete PDF filename via https://archive.org/metadata/examinationques01boargoog in Phase 2",
+      "publication_year": 1905,
+      "license": "Public domain (US): published before 1931 (Google Books scan)",
+      "evidence": [
+        {
+          "url": "https://archive.org/details/examinationques01boargoog",
+          "note": "Internet Archive item (Google Books scan) of CEEB history examination questions 1901-1905; publication predates 1931 by 26+ years.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "approved",
+      "priority": "medium",
+      "decision_reason": "US public domain (pre-1931 publication).",
+      "notes": "Oldest item in the registry; also useful as an OCR stress test (older typography)."
+    },
+    {
+      "id": "wikibooks-sat-study-guide",
+      "usage_tag": "CC_BY_SA_ATTRIBUTION_SHAREALIKE",
+      "collection": { "method": "skip", "reason": "HTML wiki with almost no question content; approved on license but deprioritized for collection" },
+      "name": "Wikibooks: SAT Study Guide",
+      "publisher": "Wikimedia Foundation (community-authored)",
+      "source_type": "cc_licensed_wiki",
+      "landing_url": "https://en.wikibooks.org/wiki/SAT_Study_Guide",
+      "file_urls": [],
+      "publication_year": null,
+      "license": "CC BY-SA (Creative Commons Attribution-ShareAlike)",
+      "evidence": [
+        {
+          "url": "https://en.wikibooks.org/wiki/SAT_Study_Guide",
+          "note": "Page footer states text is available under the Creative Commons Attribution-ShareAlike License. However the book is ~0% developed: practice-test section is an empty stub; only a few review subsections have content.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "approved",
+      "priority": "low",
+      "decision_reason": "Valid open license (CC BY-SA), but content is nearly empty - no actual practice questions. Kept in registry for completeness; deprioritized for collection.",
+      "notes": "HTML source, not PDF. Would need a different collection path; low expected yield."
+    },
+    {
+      "id": "collegeboard-paper-practice-tests",
+      "usage_tag": "RESTRICTED_INTERNAL_USE_ONLY_DO_NOT_REDISTRIBUTE",
+      "collection": {
+        "method": "collegeboard_pdfs",
+        "page_url": "https://satsuite.collegeboard.org/sat/practice-preparation/practice-tests/paper",
+        "owner_signoff": "Granted by project owner on 2026-07-15: internal educational use only, outputs must stay private, no redistribution.",
+        "automation_note": "College Board's CDN resets connections from non-browser clients (verified 2026-07-15), and PDF links are rendered client-side. Collection therefore goes through the manual-intake path: download in a normal browser, drop into data/raw/_inbox/collegeboard-paper-practice-tests/, run downloader --intake.",
+        "known_url_pattern": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-{N}-digital.pdf (N confirmed via search: 1, 4, 5, 6, 8, 9, 10, 11)"
+      },
+      "name": "College Board Official SAT Paper Practice Tests (PDF)",
+      "publisher": "College Board",
+      "source_type": "official_free_download",
+      "landing_url": "https://satsuite.collegeboard.org/sat/practice-preparation/practice-tests/paper",
+      "file_urls": [],
+      "file_resolution": "Individual practice-test PDF links to be enumerated from landing page if collection is authorized",
+      "publication_year": 2023,
+      "license": "Copyright College Board, all rights reserved. Free download; personal, non-commercial educational use only; redistribution and online re-posting prohibited without written permission.",
+      "evidence": [
+        {
+          "url": "https://satsuite.collegeboard.org/sat/practice-preparation/practice-tests",
+          "note": "Official practice-tests page confirms free full-length paper (nonadaptive) practice test PDFs are offered for download.",
+          "retrieved": "2026-07-15"
+        },
+        {
+          "url": "https://satsuite.collegeboard.org/k12-educators/educator-experience/student-data-privacy-agreement",
+          "note": "SAT Suite Program Agreement: College Board is the exclusive owner of all rights in the SAT exam and all individual test items; posting/reproducing questions online without express written permission is prohibited. Official practice tests may be used by students in noncommercial educational settings.",
+          "retrieved": "2026-07-15"
+        },
+        {
+          "url": "https://privacy.collegeboard.org/copyright-trademark/request-instructions",
+          "note": "College Board maintains a formal copyright permission request process, confirming materials are not openly licensed.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "conditional",
+      "priority": "high",
+      "decision_reason": "Free and official, but NOT openly licensed. Downloading for personal educational use is consistent with College Board terms; redistribution of the PDFs or extracted questions is not. Requires explicit project-owner sign-off before collection, and outputs must stay private.",
+      "notes": "Direct fetches of collegeboard.org terms pages were blocked (connection reset / timeout - likely bot protection); license position verified via College Board's own program-agreement and copyright-permission pages found through search. Re-verify manually in a browser before any collection."
+    },
+    {
+      "id": "collegeboard-educator-question-bank",
+      "name": "College Board SAT Suite Educator Question Bank",
+      "publisher": "College Board",
+      "source_type": "official_web_app",
+      "landing_url": "https://satsuitequestionbank.collegeboard.org/",
+      "file_urls": [],
+      "publication_year": 2023,
+      "license": "Copyright College Board. Terms explicitly prohibit uploading, posting, caching, reproducing, or modifying any portion of the SAT Suite Question Bank without express written permission.",
+      "evidence": [
+        {
+          "url": "https://satsuite.collegeboard.org/k12-educators/educator-experience/student-data-privacy-agreement",
+          "note": "Program agreement prohibits caching/reproducing/scraping the SAT Suite Question Bank without express written permission from College Board.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "rejected",
+      "priority": null,
+      "decision_reason": "Terms explicitly prohibit exactly what this pipeline would do (caching/reproducing question bank items). Official and free does not mean collectible.",
+      "notes": "3,500+ questions for educators, but scraping is expressly forbidden."
+    },
+    {
+      "id": "khan-academy-sat-practice",
+      "name": "Khan Academy Official SAT Practice",
+      "publisher": "Khan Academy (content owned by College Board)",
+      "source_type": "official_web_app",
+      "landing_url": "https://www.khanacademy.org/",
+      "file_urls": [],
+      "publication_year": 2023,
+      "license": "Khan Academy ToS: personal non-commercial use only; scraping/automated extraction prohibited; AI/ML training use prohibited. SAT items remain College Board copyright.",
+      "evidence": [
+        {
+          "url": "https://support.khanacademy.org/hc/en-us/articles/42929097425037-What-s-allowed-and-not-allowed-under-Khan-Academy-s-Terms-of-Service",
+          "note": "Khan Academy help center: ToS prohibits scraping tools/bots to copy or extract data, and prohibits use of content to train/test/develop AI or ML tools.",
+          "retrieved": "2026-07-15"
+        },
+        {
+          "url": "https://www.khanacademy.org/about/tos",
+          "note": "Khan Academy Terms of Service (personal, non-commercial use).",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "rejected",
+      "priority": null,
+      "decision_reason": "ToS explicitly prohibits scraping and automated extraction; underlying SAT content is College Board copyright.",
+      "notes": ""
+    },
+    {
+      "id": "cracksat-net",
+      "name": "CrackSAT.net practice test collection",
+      "publisher": "CrackSAT.net (third-party aggregator)",
+      "source_type": "third_party_aggregator",
+      "landing_url": "https://www.cracksat.net/sat-tests/",
+      "file_urls": [],
+      "publication_year": null,
+      "license": "No valid license. Site redistributes College Board copyrighted practice tests without evident authorization.",
+      "evidence": [
+        {
+          "url": "https://www.cracksat.net/about/copyright.html",
+          "note": "Site's own copyright page claims content copyright by a private individual, with no evidence of a College Board license or permission.",
+          "retrieved": "2026-07-15"
+        },
+        {
+          "url": "https://privacy.collegeboard.org/copyright-trademark/request-instructions",
+          "note": "College Board requires written permission for reproduction of its test materials; no indication CrackSAT holds such permission.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "rejected",
+      "priority": null,
+      "decision_reason": "Unauthorized redistribution of copyrighted College Board materials. Collecting from it would launder infringing copies into the pipeline.",
+      "notes": "Classic example of a free-but-not-legal source."
+    },
+    {
+      "id": "opensat-github",
+      "name": "OpenSAT (GitHub question databank + API)",
+      "publisher": "Community project (Anas099X/OpenSAT)",
+      "source_type": "github_repo",
+      "landing_url": "https://github.com/Anas099X/OpenSAT",
+      "file_urls": [],
+      "publication_year": 2024,
+      "license": "Repository code is open source, but the license of the question CONTENT is unclear and provenance is unverifiable (community-submitted and AI-generated items; risk of derivation from College Board copyrighted questions).",
+      "evidence": [
+        {
+          "url": "https://github.com/Anas099X/OpenSAT",
+          "note": "Open-source repo offering a free SAT question databank and JSON API; README describes community contributions and an AI question generator. No documented provenance or content license separating it from College Board items.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "rejected",
+      "priority": null,
+      "decision_reason": "A code license does not license the question content. Provenance of items is unverifiable and may derive from copyrighted College Board material; AI-generated items also lack quality assurance.",
+      "notes": "Could be revisited if the project publishes a clear content license and provenance audit."
+    },
+    {
+      "id": "archive-10-sats-1983",
+      "name": "10 SATs: actual and complete Scholastic Aptitude Tests (1983+ book scans)",
+      "publisher": "College Entrance Examination Board",
+      "source_type": "in_copyright_scan",
+      "landing_url": "https://archive.org/details/10satsactualcomp00coll",
+      "file_urls": [],
+      "publication_year": 1983,
+      "license": "In copyright. Internet Archive access is controlled digital lending only (borrow), not free download.",
+      "evidence": [
+        {
+          "url": "https://archive.org/details/10satsactualcomp00coll",
+          "note": "Archive.org item is a 1983 College Board publication available via lending, not open download; publication postdates 1930 so no public-domain basis.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "rejected",
+      "priority": null,
+      "decision_reason": "Under copyright (published 1983); lending access does not grant collection or reproduction rights.",
+      "notes": ""
+    },
+    {
+      "id": "archive-real-sat-subject-tests",
+      "name": "Real SAT Subject Tests (book scan)",
+      "publisher": "College Entrance Examination Board",
+      "source_type": "in_copyright_scan",
+      "landing_url": "https://archive.org/details/realsatsubjectte00coll",
+      "file_urls": [],
+      "publication_year": 2006,
+      "license": "In copyright. Controlled digital lending only.",
+      "evidence": [
+        {
+          "url": "https://archive.org/details/realsatsubjectte00coll",
+          "note": "Modern College Board publication on archive.org via lending; no public-domain or open-license basis.",
+          "retrieved": "2026-07-15"
+        }
+      ],
+      "status": "rejected",
+      "priority": null,
+      "decision_reason": "Under copyright; lending access does not grant collection rights.",
+      "notes": ""
+    }
+  ]
+}
