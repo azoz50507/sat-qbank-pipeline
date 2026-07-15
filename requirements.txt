@@ -1,2 +1,5 @@
-# Phase 1 (source registry): Python standard library only - no dependencies.
-# Phase 2/3 dependencies will be added when those phases land.
+# Phase 1-2 (registry, downloader): Python standard library only.
+# Phase 3 (rendering & routing, dashboard, tests):
+pymupdf>=1.26
+flask>=3.0
+pytest>=8.0

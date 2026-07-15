@@ -5,3 +5,6 @@ venv/
 
 # Bulk downloaded originals (provenance ledger is kept, payloads are re-fetchable)
 data/raw/
+
+# Rendered page images/text (regenerable; includes RESTRICTED-derived assets)
+data/pages/
