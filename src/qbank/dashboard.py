@@ -138,6 +138,9 @@ INDEX_TEMPLATE = BASE_CSS + """
   <div class="tile"><div class="v">{{ totals.answer_key }}</div><div class="l">answer-key pages</div></div>
   <div class="tile"><div class="v">{{ totals.text_pct }}%</div><div class="l">routed to text path</div></div>
   <div class="tile"><div class="v">{{ totals.image }}</div><div class="l">routed to image/OCR</div></div>
+  {% if ocr_totals %}
+  <div class="tile"><div class="v">{{ ocr_totals.n }}</div><div class="l">pages OCR-recovered (mean conf {{ ocr_totals.conf }})</div></div>
+  {% endif %}
 </div>
 
 <div class="panel">
@@ -243,6 +246,13 @@ DETAIL_TEMPLATE = BASE_CSS + """
       <h2>Extracted text layer</h2>
       <pre class="textlayer">{{ text if text else '(no embedded text on this page)' }}</pre>
     </div>
+    {% if ocr %}
+    <div class="panel">
+      <h2>OCR text ({{ ocr.engine }}, {{ ocr.dpi }} DPI)</h2>
+      <p class="sub">mean confidence {{ ocr.mean_conf }} &middot; {{ ocr.word_count }} words &middot; quality: <b>{{ ocr.quality_flag }}</b></p>
+      <pre class="textlayer">{{ ocr_text if ocr_text else '(OCR produced no text)' }}</pre>
+    </div>
+    {% endif %}
   </div>
 </div>
 """
@@ -278,6 +288,14 @@ def index():
            FROM pages"""
     )[0]
 
+    ocr_totals = None
+    if query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='ocr_results'"):
+        row = query(
+            "SELECT COUNT(*) AS n, ROUND(AVG(mean_conf), 1) AS conf FROM ocr_results"
+        )[0]
+        if row["n"]:
+            ocr_totals = row
+
     per_source = query(
         f"""SELECT source_id, COUNT(*) AS n,
                    {', '.join(f"SUM(classification='{c}') AS \"{c}\"" for c in CLASSES)}
@@ -305,7 +323,7 @@ def index():
         sources=[r["source_id"] for r in per_source], classes=CLASSES,
         routes=ROUTES, rows=rows, matched=matched, page=page,
         pages_total=pages_total, f_source=f_source, f_cls=f_cls,
-        f_route=f_route, page_url=page_url,
+        f_route=f_route, page_url=page_url, ocr_totals=ocr_totals,
     )
 
 
@@ -320,6 +338,17 @@ def page_detail(source: str, doc: str, num: int):
     row = rows[0]
     text_file = PROJECT_ROOT / row["text_path"]
     text = text_file.read_text(encoding="utf-8") if text_file.exists() else ""
+    ocr_row, ocr_text = None, ""
+    if query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='ocr_results'"):
+        found = query(
+            "SELECT * FROM ocr_results WHERE source_id=? AND doc=? AND page_num=?",
+            (source, doc, num),
+        )
+        if found:
+            ocr_row = found[0]
+            ocr_file = PROJECT_ROOT / ocr_row["ocr_path"]
+            if ocr_file.exists():
+                ocr_text = ocr_file.read_text(encoding="utf-8", errors="replace").strip()
     neighbors = {
         n for (n,) in query(
             "SELECT page_num FROM pages WHERE source_id=? AND doc=? AND page_num IN (?, ?)",
@@ -328,6 +357,7 @@ def page_detail(source: str, doc: str, num: int):
     }
     return render_template_string(
         DETAIL_TEMPLATE, r=row, text=text.strip(),
+        ocr=ocr_row, ocr_text=ocr_text,
         prev=num - 1 if num - 1 in neighbors else None,
         next=num + 1 if num + 1 in neighbors else None,
     )
