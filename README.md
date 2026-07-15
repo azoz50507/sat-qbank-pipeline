@@ -70,3 +70,25 @@ Python 3.10+. Full write-ups:
 [docs/phase1_README.md](docs/phase1_README.md) ·
 [docs/phase2_README.md](docs/phase2_README.md) ·
 [docs/phase3_README.md](docs/phase3_README.md).
+
+## Running on a fresh machine
+
+```
+git clone https://github.com/azoz50507/sat-qbank-pipeline.git
+cd sat-qbank-pipeline
+pip install -r requirements.txt
+python src/qbank/downloader.py    # re-fetches all public-domain sources (checksum-verified)
+python src/qbank/render.py        # renders, classifies, and routes every page
+python -m pytest                  # 23 tests
+python src/qbank/dashboard.py     # review dashboard -> http://127.0.0.1:8765
+```
+
+Raw PDFs and rendered page images are intentionally **not** committed:
+
+- **Public-domain sources** (the 1926 SAT and CEEB volumes) are re-downloaded
+  automatically by the downloader, with SHA-256 verification against the
+  committed provenance ledger.
+- **College Board practice tests** are copyright-restricted and cannot be
+  redistributed. Each user downloads them personally in a browser following
+  `data/raw/_inbox/collegeboard-paper-practice-tests/HOW_TO_DOWNLOAD.txt`,
+  then runs `python src/qbank/downloader.py --intake`.
