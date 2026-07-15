@@ -461,6 +461,8 @@ def run_intake(conn: sqlite3.Connection, seed: dict) -> None:
         if tag.startswith("RESTRICTED"):
             (dest_dir / "RESTRICTED_README.txt").write_text(RESTRICTED_README, encoding="utf-8")
         for file in sorted(p for p in src_dir.iterdir() if p.is_file()):
+            if file.suffix.lower() != ".pdf":
+                continue  # instructions/readme files live in the inbox too
             body = file.read_bytes()
             ok, detected, detail = validate_payload(body, expected="pdf")
             if not ok:
@@ -471,7 +473,9 @@ def run_intake(conn: sqlite3.Connection, seed: dict) -> None:
             now = utc_now()
             ledger_upsert(
                 conn, source_id=src_dir.name,
-                url=f"manual-download:{source.get('landing_url', 'n/a')}",
+                # the fragment keeps (source_id, url) unique per file: manual
+                # downloads all share one landing page as their provenance URL
+                url=f"manual-download:{source.get('landing_url', 'n/a')}#{dest.name}",
                 filename=dest.name, local_path=str(dest.relative_to(PROJECT_ROOT)),
                 sha256=sha256_file(dest), size_bytes=dest.stat().st_size,
                 content_type="application/pdf (manual intake)", detected_type=detected,
@@ -482,6 +486,58 @@ def run_intake(conn: sqlite3.Connection, seed: dict) -> None:
             moved += 1
             log(f"  intake ok: {src_dir.name}/{dest.name}")
     log(f"\nIntake complete: {moved} file(s) ledgered.")
+    reconcile_untracked(conn, by_id)
+
+
+def reconcile_untracked(conn: sqlite3.Connection, by_id: dict[str, dict]) -> None:
+    """Adopt files that were placed directly into source folders.
+
+    Provenance safety net: if a human bypasses the inbox and drops files
+    straight into ``data/raw/<source_id>/``, those files exist on disk with
+    no ledger entry - and everything downstream works off the ledger. This
+    pass finds such orphans, validates and hashes them, and records them
+    with an explicit 'adopted by reconciliation' detail so the audit trail
+    stays honest about how they arrived.
+    """
+    adopted = 0
+    for source_id, source in by_id.items():
+        src_dir = RAW_DIR / source_id
+        if not src_dir.exists():
+            continue
+        known = {
+            row["local_path"]
+            for row in conn.execute(
+                "SELECT local_path FROM collection_ledger WHERE local_path IS NOT NULL"
+            )
+        }
+        tag = source.get("usage_tag", "DO_NOT_COLLECT")
+        for file in sorted(src_dir.glob("*.pdf")):
+            rel = str(file.relative_to(PROJECT_ROOT))
+            if rel in known:
+                continue
+            body = file.read_bytes()
+            ok, detected, detail = validate_payload(body, expected="pdf")
+            if not ok:
+                log(f"  RECONCILE REJECTED {source_id}/{file.name}: {detail}")
+                continue
+            now = utc_now()
+            ledger_upsert(
+                conn, source_id=source_id,
+                url=f"manual-download:{source.get('landing_url', 'n/a')}#{file.name}",
+                filename=file.name, local_path=rel,
+                sha256=sha256_file(file), size_bytes=file.stat().st_size,
+                content_type="application/pdf (reconciled)", detected_type=detected,
+                usage_tag=tag, status="manual_intake",
+                detail=(
+                    "adopted by reconciliation: file was placed directly in the "
+                    f"source folder (bypassing _inbox); validated and hashed on {now}"
+                ),
+                retrieved_at=now, last_verified_at=now,
+            )
+            adopted += 1
+            log(f"  reconciled: {source_id}/{file.name}")
+    if adopted:
+        log(f"Reconciliation: adopted {adopted} orphan file(s) into the ledger.")
 
 
 def print_summary(conn: sqlite3.Connection) -> None:
