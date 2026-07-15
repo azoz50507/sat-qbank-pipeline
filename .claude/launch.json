@@ -5,7 +5,8 @@
       "name": "dashboard",
       "runtimeExecutable": "python",
       "runtimeArgs": ["src/qbank/dashboard.py"],
-      "port": 8765
+      "port": 8765,
+      "autoPort": true
     }
   ]
 }

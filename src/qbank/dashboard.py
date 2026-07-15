@@ -14,6 +14,7 @@ Usage:
 
 from __future__ import annotations
 
+import os
 import sqlite3
 from pathlib import Path
 
@@ -369,4 +370,4 @@ def asset(relpath: str):
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8765, debug=False)
+    app.run(host="127.0.0.1", port=int(os.environ.get("PORT", "8765")), debug=False)
