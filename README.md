@@ -63,6 +63,10 @@ sat-qbank-pipeline/
 | 5 | Question segmentation: schema + heuristic segmenter -> question_items bank | **Done** |
 | 6 | Answer alignment: answer-key parsing + monotone matching -> Q/A records | **Done** |
 | 7 | Packaging: validation gate + license-partitioned versioned release | **Done** |
+| 8 | Code freeze: handover guide, changelog, final presentation | **Done** |
+
+New here? Start with [docs/HANDOVER.md](docs/HANDOVER.md), then
+[CHANGELOG.md](CHANGELOG.md).
 
 ## Quickstart
 
