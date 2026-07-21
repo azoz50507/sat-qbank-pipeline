@@ -37,16 +37,23 @@ TEXT_ROUTE_MIN_ALNUM = 0.55  # below this the layer is likely OCR garbage
 
 HEAD_WINDOW = 600         # chars from the top of the page used for patterns
 
+# NOTE: Phase 6 QA removed two loose patterns that misclassified exam pages
+# whose *instructions* mention answers ("Correct answers to eight questions
+# constitute a full paper", CEEB volumes). What remains are strong
+# answer-section markers plus a standalone ANSWERS heading.
 ANSWER_PATTERNS = [
     re.compile(p, re.IGNORECASE)
     for p in (
         r"answer\s+key",
         r"answer\s+explanations?",
         r"scoring\s+your",
-        r"\banswers\s+to\b",
-        r"correct\s+answers?\b",
     )
 ]
+
+# A bare "ANSWERS" heading only counts near the very top of the page:
+# in old scans, line-wrapped prose puts the word alone on a line mid-page.
+STANDALONE_ANSWERS = re.compile(r"(?mi)^\s*answers\s*$")
+STANDALONE_ANSWERS_WINDOW = 120
 
 INDEX_PATTERNS = [
     re.compile(p, re.IGNORECASE | re.MULTILINE)
@@ -122,6 +129,10 @@ def classify_page(stats: PageStats) -> Decision:
     if (pattern := _matches_any(ANSWER_PATTERNS, head)) is not None:
         return _route_for_content(
             stats, "answer_key", f"header matches answer pattern /{pattern.pattern}/"
+        )
+    if STANDALONE_ANSWERS.search(head[:STANDALONE_ANSWERS_WINDOW]):
+        return _route_for_content(
+            stats, "answer_key", "standalone ANSWERS heading at page top"
         )
 
     # 3. Table of contents / index pages.

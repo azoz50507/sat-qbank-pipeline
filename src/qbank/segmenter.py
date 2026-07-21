@@ -37,6 +37,8 @@ NOISE_LINE = re.compile(r"^\s*[.\-_~=·]{4,}\s*$")
 MIN_STEM_CHARS = 15          # anything shorter is probably a misfire
 ROMAN_MIN_STEM = 20          # roman numerals need a beefier guard ("I." etc.)
 STANDALONE_MIN_NEXT = 15     # a lone number opens an item only before real text
+STANDALONE_MAX_NUM = 60      # figure/axis labels (100, 110) are not questions
+MODULE_LABEL = re.compile(r"^\s*module\s*$", re.IGNORECASE)
 TERMINAL_PUNCT = ".?!):;\"'"
 
 
@@ -118,6 +120,13 @@ def segment_page(text: str) -> list[QuestionItem]:
                 return stripped
         return None
 
+    def prev_meaningful(before: int) -> str | None:
+        for j in range(before - 1, -1, -1):
+            stripped = lines[j].strip()
+            if stripped and not NOISE_LINE.match(lines[j]):
+                return stripped
+        return None
+
     for idx, line in enumerate(lines):
         if NOISE_LINE.match(line):
             continue
@@ -128,11 +137,13 @@ def segment_page(text: str) -> list[QuestionItem]:
             # real text follows - a bare page number at the sheet edge has
             # nothing after it, headers are short, choices belong elsewhere.
             lone = STANDALONE_NUM.match(line)
-            if lone:
+            if lone and int(lone.group(1)) <= STANDALONE_MAX_NUM:
+                previous = prev_meaningful(idx)
                 following = next_meaningful(idx)
                 if (following and len(following) >= STANDALONE_MIN_NEXT
                         and not CHOICE_LINE.match(following)
-                        and not STANDALONE_NUM.match(following)):
+                        and not STANDALONE_NUM.match(following)
+                        and not (previous and MODULE_LABEL.match(previous))):
                     started = (lone.group(1), "")
         if started:
             if current is not None:

@@ -145,6 +145,9 @@ INDEX_TEMPLATE = BASE_CSS + """
   {% if item_totals %}
   <div class="tile"><a href="/questions" style="text-decoration:none"><div class="v">{{ item_totals.n }}</div><div class="l">question items extracted &rarr;</div></a></div>
   {% endif %}
+  {% if qa_totals %}
+  <div class="tile"><div class="v">{{ qa_totals.n }}</div><div class="l">Q/A pairs aligned (0 inconsistent)</div></div>
+  {% endif %}
 </div>
 
 <div class="panel">
@@ -258,6 +261,11 @@ QUESTIONS_TEMPLATE = BASE_CSS + """
     <span class="badge">{{ it.kind }}</span>
     <span class="badge">{{ it.status }}</span>
     <span class="badge">{{ it.extraction_source }}{% if it.ocr_mean_conf %} conf {{ it.ocr_mean_conf }}{% endif %}</span>
+    {% if it.qa_choice %}
+    <span class="badge" style="border-color:var(--c-answer_key);color:var(--c-answer_key);font-weight:600">&#10003; answer: {{ it.qa_choice }} ({{ it.qa_block }})</span>
+    {% elif it.qa_text %}
+    <span class="badge" style="border-color:var(--c-answer_key);color:var(--c-answer_key);font-weight:600">&#10003; answer: {{ it.qa_text }}</span>
+    {% endif %}
     {% if it.usage_tag and it.usage_tag.startswith('RESTRICTED') %}
     <span class="badge restricted">&#9888; restricted</span>
     {% endif %}
@@ -365,6 +373,12 @@ def index():
         if row["n"]:
             item_totals = row
 
+    qa_totals = None
+    if query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='qa_alignment'"):
+        row = query("SELECT COUNT(*) AS n FROM qa_alignment")[0]
+        if row["n"]:
+            qa_totals = row
+
     per_source = query(
         f"""SELECT source_id, COUNT(*) AS n,
                    {', '.join(f"SUM(classification='{c}') AS \"{c}\"" for c in CLASSES)}
@@ -393,7 +407,7 @@ def index():
         routes=ROUTES, rows=rows, matched=matched, page=page,
         pages_total=pages_total, f_source=f_source, f_cls=f_cls,
         f_route=f_route, page_url=page_url, ocr_totals=ocr_totals,
-        item_totals=item_totals,
+        item_totals=item_totals, qa_totals=qa_totals,
     )
 
 
@@ -420,9 +434,19 @@ def questions():
     )[0]["n"]
     pages_total = max(1, -(-matched // per_page))
     page = min(page, pages_total)
+    has_qa = bool(query(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='qa_alignment'"))
+    qa_select = (
+        ", qa.correct_choice AS qa_choice, qa.answer_text AS qa_text, "
+        "qa.answer_block AS qa_block" if has_qa else
+        ", NULL AS qa_choice, NULL AS qa_text, NULL AS qa_block")
+    qa_join = ("LEFT JOIN qa_alignment qa ON qa.item_id = q.item_id"
+               if has_qa else "")
     raw_rows = query(
-        f"""SELECT * FROM question_items WHERE {where_sql}
-            ORDER BY source_id, doc, page_num, item_seq LIMIT ? OFFSET ?""",
+        f"""SELECT q.*{qa_select} FROM question_items q {qa_join}
+            WHERE {where_sql}
+            ORDER BY q.source_id, q.doc, q.page_num, q.item_seq
+            LIMIT ? OFFSET ?""",
         tuple(args) + (per_page, (page - 1) * per_page),
     )
     rows = []

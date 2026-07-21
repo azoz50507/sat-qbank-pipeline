@@ -256,12 +256,62 @@ def print_summary(conn: sqlite3.Connection) -> None:
         print(f"{row[0]:<36} {row[1]:>6} {row[2]:>8} {row[3]:>7} {row[4]:>6} {row[5]:>6} {row[6]:>6}")
 
 
+def reclassify(conn: sqlite3.Connection) -> int:
+    """Re-run classification/routing from stored stats without re-rendering.
+
+    Used when pagestats rules change: rebuilds each page's PageStats from
+    its stored measurements and saved text file, reapplies classify_page,
+    and reports what changed. Fast (no rendering, no OCR).
+    """
+    changed = 0
+    doc_counts = {
+        (row[0], row[1]): row[2]
+        for row in conn.execute(
+            "SELECT source_id, doc, COUNT(*) FROM pages GROUP BY source_id, doc"
+        )
+    }
+    for row in conn.execute("SELECT * FROM pages").fetchall():
+        text_file = PROJECT_ROOT / row["text_path"]
+        text = text_file.read_text(encoding="utf-8", errors="replace") \
+            if text_file.exists() else ""
+        stats = PageStats(
+            page_num=row["page_num"],
+            doc_page_count=doc_counts[(row["source_id"], row["doc"])],
+            width_pt=row["width_pt"], height_pt=row["height_pt"],
+            text_chars=row["text_chars"], word_count=row["word_count"],
+            alnum_ratio=row["alnum_ratio"], ink_ratio=row["ink_ratio"],
+            head_text=text.strip()[:600],
+        )
+        decision = classify_page(stats)
+        if (decision.classification != row["classification"]
+                or decision.route != row["route"]):
+            print(f"  {row['source_id']}/{row['doc']} p.{row['page_num']}: "
+                  f"{row['classification']}/{row['route']} -> "
+                  f"{decision.classification}/{decision.route}")
+            conn.execute(
+                "UPDATE pages SET classification=?, route=?, reason=? WHERE id=?",
+                (decision.classification, decision.route,
+                 f"[reclassified] {decision.reason}", row["id"]),
+            )
+            changed += 1
+    conn.commit()
+    print(f"Reclassify: {changed} page(s) changed.")
+    return changed
+
+
 def main(argv: list[str]) -> int:
     force = "--force" in argv
     PAGES_DIR.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.executescript(PAGES_SCHEMA)
+
+    if "--reclassify" in argv:
+        reclassify(conn)
+        export_csv(conn)
+        print_summary(conn)
+        conn.close()
+        return 0
 
     started = time.time()
     docs = ledgered_documents(conn)

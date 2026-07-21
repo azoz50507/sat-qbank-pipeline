@@ -29,7 +29,9 @@ sat-qbank-pipeline/
 │       ├── dashboard.py       <- Phase 3: local review dashboard (Flask)
 │       ├── ocr.py             <- Phase 4: Tesseract OCR + confidence scoring
 │       ├── segmenter.py       <- Phase 5: question segmentation rules (pure)
-│       └── extract.py         <- Phase 5: question-bank extraction driver
+│       ├── extract.py         <- Phase 5: question-bank extraction driver
+│       ├── answers.py         <- Phase 6: answer parsing + sequence alignment
+│       └── align.py           <- Phase 6: Q/A alignment driver
 ├── tests/                     <- pytest suite (validation + routing rules)
 ├── data/
 │   ├── registry/
@@ -58,6 +60,7 @@ sat-qbank-pipeline/
 | 3 | Rendering & routing: page images + text layer, quality cards, classification, review dashboard, tests | **Done** |
 | 4 | OCR: Tesseract over image-routed pages, per-page confidence + quality flags | **Done** |
 | 5 | Question segmentation: schema + heuristic segmenter -> question_items bank | **Done** |
+| 6 | Answer alignment: answer-key parsing + monotone matching -> Q/A records | **Done** |
 
 ## Quickstart
 
@@ -69,6 +72,7 @@ python src/qbank/downloader.py --intake   # ledger manually downloaded files
 python src/qbank/render.py                # Phase 3: render + classify + route all pages
 python src/qbank/ocr.py                   # Phase 4: OCR image-routed pages (needs Tesseract)
 python src/qbank/extract.py               # Phase 5: segment content pages into question items
+python src/qbank/align.py                 # Phase 6: align answers -> Q/A records
 python -m pytest                          # run the test suite
 python src/qbank/dashboard.py             # review dashboard -> http://127.0.0.1:8765
 ```
