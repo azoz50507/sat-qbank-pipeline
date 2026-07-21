@@ -31,7 +31,8 @@ sat-qbank-pipeline/
 │       ├── segmenter.py       <- Phase 5: question segmentation rules (pure)
 │       ├── extract.py         <- Phase 5: question-bank extraction driver
 │       ├── answers.py         <- Phase 6: answer parsing + sequence alignment
-│       └── align.py           <- Phase 6: Q/A alignment driver
+│       ├── align.py           <- Phase 6: Q/A alignment driver
+│       └── package.py         <- Phase 7: validated, versioned release builder
 ├── tests/                     <- pytest suite (validation + routing rules)
 ├── data/
 │   ├── registry/
@@ -61,6 +62,7 @@ sat-qbank-pipeline/
 | 4 | OCR: Tesseract over image-routed pages, per-page confidence + quality flags | **Done** |
 | 5 | Question segmentation: schema + heuristic segmenter -> question_items bank | **Done** |
 | 6 | Answer alignment: answer-key parsing + monotone matching -> Q/A records | **Done** |
+| 7 | Packaging: validation gate + license-partitioned versioned release | **Done** |
 
 ## Quickstart
 
@@ -73,6 +75,7 @@ python src/qbank/render.py                # Phase 3: render + classify + route a
 python src/qbank/ocr.py                   # Phase 4: OCR image-routed pages (needs Tesseract)
 python src/qbank/extract.py               # Phase 5: segment content pages into question items
 python src/qbank/align.py                 # Phase 6: align answers -> Q/A records
+python src/qbank/package.py               # Phase 7: build data/release/qbank-v1.0.0/
 python -m pytest                          # run the test suite
 python src/qbank/dashboard.py             # review dashboard -> http://127.0.0.1:8765
 ```

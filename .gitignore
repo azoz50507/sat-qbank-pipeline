@@ -11,3 +11,6 @@ data/pages/
 
 # Extracted question bank (derived; contains RESTRICTED-derived question text)
 data/qbank/
+
+# Versioned releases (rebuildable via package.py; restricted partition inside)
+data/release/
