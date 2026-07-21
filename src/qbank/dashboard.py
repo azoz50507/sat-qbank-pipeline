@@ -142,6 +142,9 @@ INDEX_TEMPLATE = BASE_CSS + """
   {% if ocr_totals %}
   <div class="tile"><div class="v">{{ ocr_totals.n }}</div><div class="l">pages OCR-recovered (mean conf {{ ocr_totals.conf }})</div></div>
   {% endif %}
+  {% if item_totals %}
+  <div class="tile"><a href="/questions" style="text-decoration:none"><div class="v">{{ item_totals.n }}</div><div class="l">question items extracted &rarr;</div></a></div>
+  {% endif %}
 </div>
 
 <div class="panel">
@@ -212,6 +215,65 @@ INDEX_TEMPLATE = BASE_CSS + """
   </a>
   {% endfor %}
 </div>
+"""
+
+QUESTIONS_TEMPLATE = BASE_CSS + """
+<title>SAT QBank - Question Items</title>
+<p class="sub"><a href="/">&laquo; back to review board</a></p>
+<h1>Question Bank <small>Phase 5 - segmented items</small></h1>
+<p class="sub">Structured items extracted from content pages (text layer or OCR).</p>
+
+<form class="filters" method="get">
+  <select name="source">
+    <option value="">all sources</option>
+    {% for s in sources %}
+    <option value="{{ s }}" {{ 'selected' if s == f_source }}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <select name="kind">
+    <option value="">all kinds</option>
+    {% for k in kinds %}
+    <option value="{{ k }}" {{ 'selected' if k == f_kind }}>{{ k }}</option>
+    {% endfor %}
+  </select>
+  <select name="status">
+    <option value="">all statuses</option>
+    <option value="ok" {{ 'selected' if f_status == 'ok' }}>ok</option>
+    <option value="needs_review" {{ 'selected' if f_status == 'needs_review' }}>needs_review</option>
+  </select>
+  <button type="submit">Filter</button>
+</form>
+
+<div class="pager">
+  <span>{{ matched }} items match</span>
+  {% if page > 1 %}<a href="{{ page_url(page - 1) }}">&laquo; prev</a>{% endif %}
+  <span>page {{ page }} / {{ pages_total }}</span>
+  {% if page < pages_total %}<a href="{{ page_url(page + 1) }}">next &raquo;</a>{% endif %}
+</div>
+
+{% for it in rows %}
+<div class="panel">
+  <div class="badges" style="margin-bottom:8px">
+    <span class="badge"><b>Q{{ it.number_label }}</b></span>
+    <span class="badge">{{ it.kind }}</span>
+    <span class="badge">{{ it.status }}</span>
+    <span class="badge">{{ it.extraction_source }}{% if it.ocr_mean_conf %} conf {{ it.ocr_mean_conf }}{% endif %}</span>
+    {% if it.usage_tag and it.usage_tag.startswith('RESTRICTED') %}
+    <span class="badge restricted">&#9888; restricted</span>
+    {% endif %}
+    {% for f in it.flag_list %}<span class="badge">{{ f }}</span>{% endfor %}
+  </div>
+  <p>{{ it.stem[:500] }}{{ '...' if it.stem|length > 500 }}</p>
+  {% if it.choice_list %}
+  <p class="sub" style="margin-top:8px">
+    {% for c in it.choice_list %}{{ c }}<br>{% endfor %}
+  </p>
+  {% endif %}
+  <p class="sub" style="margin-top:8px">
+    <a href="/page/{{ it.source_id }}/{{ it.doc }}/{{ it.page_num }}">source: {{ it.doc }} &middot; p.{{ it.page_num }}</a>
+  </p>
+</div>
+{% endfor %}
 """
 
 DETAIL_TEMPLATE = BASE_CSS + """
@@ -297,6 +359,12 @@ def index():
         if row["n"]:
             ocr_totals = row
 
+    item_totals = None
+    if query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='question_items'"):
+        row = query("SELECT COUNT(*) AS n FROM question_items")[0]
+        if row["n"]:
+            item_totals = row
+
     per_source = query(
         f"""SELECT source_id, COUNT(*) AS n,
                    {', '.join(f"SUM(classification='{c}') AS \"{c}\"" for c in CLASSES)}
@@ -325,6 +393,60 @@ def index():
         routes=ROUTES, rows=rows, matched=matched, page=page,
         pages_total=pages_total, f_source=f_source, f_cls=f_cls,
         f_route=f_route, page_url=page_url, ocr_totals=ocr_totals,
+        item_totals=item_totals,
+    )
+
+
+@app.get("/questions")
+def questions():
+    import json as _json
+    f_source = request.args.get("source", "")
+    f_kind = request.args.get("kind", "")
+    f_status = request.args.get("status", "")
+    page = max(1, request.args.get("p", 1, type=int))
+    per_page = 25
+
+    where, args = ["1=1"], []
+    if f_source:
+        where.append("source_id = ?"); args.append(f_source)
+    if f_kind in ("multiple_choice", "free_response", "unknown"):
+        where.append("kind = ?"); args.append(f_kind)
+    if f_status in ("ok", "needs_review"):
+        where.append("status = ?"); args.append(f_status)
+    where_sql = " AND ".join(where)
+
+    matched = query(
+        f"SELECT COUNT(*) AS n FROM question_items WHERE {where_sql}", tuple(args)
+    )[0]["n"]
+    pages_total = max(1, -(-matched // per_page))
+    page = min(page, pages_total)
+    raw_rows = query(
+        f"""SELECT * FROM question_items WHERE {where_sql}
+            ORDER BY source_id, doc, page_num, item_seq LIMIT ? OFFSET ?""",
+        tuple(args) + (per_page, (page - 1) * per_page),
+    )
+    rows = []
+    for r in raw_rows:
+        d = dict(r)
+        d["choice_list"] = _json.loads(r["choices"] or "[]")
+        d["flag_list"] = _json.loads(r["flags"] or "[]")
+        rows.append(d)
+
+    sources = [r["source_id"] for r in query(
+        "SELECT DISTINCT source_id FROM question_items ORDER BY source_id")]
+
+    def page_url(n: int) -> str:
+        parts = [f"p={n}"]
+        if f_source: parts.append(f"source={f_source}")
+        if f_kind: parts.append(f"kind={f_kind}")
+        if f_status: parts.append(f"status={f_status}")
+        return "/questions?" + "&".join(parts)
+
+    return render_template_string(
+        QUESTIONS_TEMPLATE, rows=rows, matched=matched, page=page,
+        pages_total=pages_total, sources=sources,
+        kinds=["multiple_choice", "free_response", "unknown"],
+        f_source=f_source, f_kind=f_kind, f_status=f_status, page_url=page_url,
     )
 
 

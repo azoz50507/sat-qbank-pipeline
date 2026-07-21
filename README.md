@@ -27,7 +27,9 @@ sat-qbank-pipeline/
 │       ├── pagestats.py       <- Phase 3: page quality stats + routing rules
 │       ├── render.py          <- Phase 3: PDF -> images/text + classification
 │       ├── dashboard.py       <- Phase 3: local review dashboard (Flask)
-│       └── ocr.py             <- Phase 4: Tesseract OCR + confidence scoring
+│       ├── ocr.py             <- Phase 4: Tesseract OCR + confidence scoring
+│       ├── segmenter.py       <- Phase 5: question segmentation rules (pure)
+│       └── extract.py         <- Phase 5: question-bank extraction driver
 ├── tests/                     <- pytest suite (validation + routing rules)
 ├── data/
 │   ├── registry/
@@ -55,6 +57,7 @@ sat-qbank-pipeline/
 | 2 | Collection: downloader + provenance ledger + integrity checks | **Done** |
 | 3 | Rendering & routing: page images + text layer, quality cards, classification, review dashboard, tests | **Done** |
 | 4 | OCR: Tesseract over image-routed pages, per-page confidence + quality flags | **Done** |
+| 5 | Question segmentation: schema + heuristic segmenter -> question_items bank | **Done** |
 
 ## Quickstart
 
@@ -65,6 +68,7 @@ python src/qbank/downloader.py            # Phase 2: collect eligible sources (i
 python src/qbank/downloader.py --intake   # ledger manually downloaded files
 python src/qbank/render.py                # Phase 3: render + classify + route all pages
 python src/qbank/ocr.py                   # Phase 4: OCR image-routed pages (needs Tesseract)
+python src/qbank/extract.py               # Phase 5: segment content pages into question items
 python -m pytest                          # run the test suite
 python src/qbank/dashboard.py             # review dashboard -> http://127.0.0.1:8765
 ```

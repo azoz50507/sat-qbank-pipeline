@@ -8,3 +8,6 @@ data/raw/
 
 # Rendered page images/text (regenerable; includes RESTRICTED-derived assets)
 data/pages/
+
+# Extracted question bank (derived; contains RESTRICTED-derived question text)
+data/qbank/
